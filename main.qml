@@ -12,7 +12,7 @@ Window {
             console.log("foo");
             BW.publishMsgPack("410.dev/bleedding", "2.0.1.2", {"hi":"bye"}, function(status)
             {
-                console.log("status was in qml", status);
+                console.log("status was in qml ", status);
             });
 
         }
