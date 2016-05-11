@@ -1,0 +1,3 @@
+[submodule "qtlibbw"]
+	path = qtlibbw
+	url = https://github.com/immesys/qtlibbw.git
