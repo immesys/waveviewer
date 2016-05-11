@@ -7,7 +7,7 @@ SOURCES += main.cpp
 
 RESOURCES += qml.qrc
 
-include(bosswave/bosswave.pri)
+include(qtlibbw/bosswave.pri)
 
 QTPLUGIN += BOSSWAVE
 
