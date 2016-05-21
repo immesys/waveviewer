@@ -2,4 +2,8 @@
     <qresource prefix="/">
         <file>main.qml</file>
     </qresource>
+    <qresource prefix="/mainassets">
+        <file alias="search.png">mainassets/search.png</file>
+        <file alias="entity.png">mainassets/entity.png</file>
+    </qresource>
 </RCC>
