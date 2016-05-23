@@ -106,7 +106,7 @@ void WaveViewer::appLoadComplete(QObject *obj, const QUrl &url)
         //Initial window load
         //This is set by the publishing script
 #ifdef REAL_VERSION
-        robjz[0]->setProperty("title", QString("Wavelet Viewer v%1").arg(#REAL_VERSION));
+        robjz[0]->setProperty("title", QString("Wavelet Viewer v%1").arg(REAL_VERSION));
 #else
         robjz[0]->setProperty("title", QString("Wavelet Viewer v%1.%2.x").arg(VER_MAJOR, VER_MINOR));
 #endif
