@@ -9,6 +9,7 @@ SOURCES += main.cpp \
 RESOURCES += qml.qrc
 
 include(qtlibbw/bosswave.pri)
+include(material/material.pri)
 
 QTPLUGIN += BOSSWAVE
 
@@ -17,6 +18,8 @@ QML_IMPORT_PATH =
 
 # Default rules for deployment.
 include(deployment.pri)
-
 HEADERS += \
-    waveviewer.h
+    waveviewer.h \
+    real_version.h
+
+DISTFILES +=

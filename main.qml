@@ -1,6 +1,7 @@
 import QtQuick 2.6
 import QtQuick.Controls 1.4
 import BOSSWAVE 1.0
+import WaveViewer 1.0
 
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.1
@@ -12,7 +13,9 @@ ApplicationWindow {
     height: 768
     visible:true
     title: "Wavelet viewer"
+    objectName: "appwin"
     toolBar: ToolBar {
+        id: "maintb"
         style: ToolBarStyle{}
         RowLayout {
             anchors.fill: parent
@@ -29,8 +32,9 @@ ApplicationWindow {
 
                 style: TextFieldStyle{}
                 id: url
+                text: "410.dev/michael/s.helloworld/app"
                 onAccepted: {
-                    url.text = bw.loadWavelet(url.text)
+                    WV.loadWavelet(url.text)
                 }
             }
             ToolButton {
@@ -41,7 +45,7 @@ ApplicationWindow {
                     mipmap: true
                 }
                 onClicked: {
-                    url.text = bw.loadWavelet(url.text)
+                   WV.loadWavelet(url.text)
                 }
             }
         }
@@ -57,17 +61,10 @@ ApplicationWindow {
 //    property var gg : Rectangle {
 //      color: "red"
 //    }
-//    function killMain() {
-//      if (appContainer.children.length != 0 ){
-//        console.log("setting opacity")
-//        appContainer.children[0].opacity=0
-//      }
-//      console.log("killed main")
-//    }
     function loadMain (body) {
-      console.log("doing loadmain")
       appContainer.children = [body]
       body.anchors.fill = appContainer
+      maintb.visible = false
     }
 
     Rectangle {
