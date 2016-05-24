@@ -7,6 +7,7 @@ SOURCES += main.cpp \
     waveviewer.cpp
 
 RESOURCES += qml.qrc
+RESOURCES +=
 
 include(qtlibbw/bosswave.pri)
 include(material/material.pri)

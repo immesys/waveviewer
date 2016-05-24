@@ -20,7 +20,7 @@ public:
 
 void WaveViewer::fatal(QString err)
 {
-   qFatal(err.toStdString().c_str());
+   qFatal("fatal error: %s", err.toStdString().c_str());
 }
 
 void WaveViewer::agentChanged()
@@ -51,6 +51,8 @@ void WaveViewer::agentChanged()
 
 QObject *WaveViewer::qmlSingleton(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
     qDebug() << "qmlsingleton called";
     return WaveViewer::instance();
 }
@@ -71,6 +73,10 @@ void WaveViewer::switchapp(PMessage app_msg, PayloadObject* app)
         m_app_f->write(app->content(), app->length());
         m_app_f->flush();
         bool res = QResource::registerResource(m_app_f->fileName(),"/app");
+        if (!res)
+        {
+            fatal("Could not load application");
+        }
        // QQmlComponent *newApp = new QQmlComponent(m_engine, QUrl("qrc:/app/app/src/main.qml"), QQmlComponent::Asynchronous);
        // newApp->
         m_engine->load(QUrl("qrc:/app/src/main.qml"));
@@ -92,6 +98,11 @@ void WaveViewer::switchapp(PMessage app_msg, PayloadObject* app)
 }
 void WaveViewer::appLoadComplete(QObject *obj, const QUrl &url)
 {
+    if (obj == nullptr)
+    {
+        fatal(QString("Could not load application at %1").arg(url.toString()));
+        return;
+    }
     auto robjz = m_engine->rootObjects();
     if (robjz.length() > 1)
     {
@@ -108,7 +119,7 @@ void WaveViewer::appLoadComplete(QObject *obj, const QUrl &url)
 #ifdef REAL_VERSION
         robjz[0]->setProperty("title", QString("Wavelet Viewer v%1").arg(REAL_VERSION));
 #else
-        robjz[0]->setProperty("title", QString("Wavelet Viewer v%1.%2.x").arg(VER_MAJOR, VER_MINOR));
+        robjz[0]->setProperty("title", QString("Wavelet Viewer v%1.%2.x").arg(VER_MAJOR).arg(VER_MINOR));
 #endif
     }
     /*if (obj != nullptr)

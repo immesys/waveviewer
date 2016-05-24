@@ -6,7 +6,7 @@
 #include <libbw.h>
 
 #define VER_MAJOR 1
-#define VER_MINOR 0
+#define VER_MINOR 1
 
 class WaveViewer : public QObject
 {
@@ -19,7 +19,7 @@ public:
         m_app_f(nullptr),
         m_app_loaded(false)
     {
-        qmlRegisterSingletonType<WaveViewer>("WaveViewer", VER_MAJOR, VER_MINOR, "WV", &WaveViewer::qmlSingleton);
+        qmlRegisterSingletonType<WaveViewer>("WaveViewer", 1, 0, "WV", &WaveViewer::qmlSingleton);
         m_engine = new QQmlApplicationEngine();
         m_engine->addImportPath(":/.");
         bw = BW::instance();
