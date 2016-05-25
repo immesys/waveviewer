@@ -164,6 +164,7 @@ void WaveViewer::checkPreload()
         {
             qDebug() << "cs nil using arg" << m_engine->rootObjects().size();
             QMetaObject::invokeMethod(m_engine->rootObjects()[0], "setthing", Q_ARG(QVariant, QCoreApplication::arguments()[1]));
+            loadWavelet(cs);
         }
         else
         {
