@@ -6,6 +6,7 @@
 #include "material/src/plugin.h"
 #include "material/src/core/device.h"
 #include "material/src/core/units.h"
+#include <QCoreApplication>
 
 #include "real_version.h"
 
@@ -159,8 +160,16 @@ void WaveViewer::checkPreload()
     }
     else
     {
-        qDebug() << "cs nil" << m_engine->rootObjects().size();
-        QMetaObject::invokeMethod(m_engine->rootObjects()[0], "setthing", Q_ARG(QVariant, QString("no uri")));
+        if (QCoreApplication::arguments().size() > 1)
+        {
+            qDebug() << "cs nil using arg" << m_engine->rootObjects().size();
+            QMetaObject::invokeMethod(m_engine->rootObjects()[0], "setthing", Q_ARG(QVariant, QCoreApplication::arguments()[1]));
+        }
+        else
+        {
+            qDebug() << "cs nil no arg" << m_engine->rootObjects().size();
+            QMetaObject::invokeMethod(m_engine->rootObjects()[0], "setthing", Q_ARG(QVariant, QString("")));
+        }
     }
 }
 

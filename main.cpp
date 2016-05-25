@@ -1,7 +1,10 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+
+#ifdef Q_OS_ANDROID
 #include <QAndroidJniObject>
 #include <QtAndroid>
+#endif
 #include "waveviewer.h"
 
 int main(int argc, char *argv[])

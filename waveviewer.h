@@ -5,8 +5,10 @@
 #include <QQmlApplicationEngine>
 #include <libbw.h>
 
+#ifdef Q_OS_ANDROID
 #include <QAndroidJniObject>
 #include <QtAndroid>
+#endif
 
 #define VER_MAJOR 1
 #define VER_MINOR 1
