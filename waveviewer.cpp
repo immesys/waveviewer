@@ -143,6 +143,7 @@ void WaveViewer::loadWavelet(QString uri)
     if (!uri.endsWith("/")) {
         uri += "/";
     }
+    m_app_uri = uri;
     uri += "i.wavelet/signal/app";
     bw->query(uri, [&](QString err, QList<PMessage> results){
         if (!err.isEmpty()) {
@@ -165,4 +166,35 @@ void WaveViewer::loadWavelet(QString uri)
         qDebug("Would have gone forth and done things");
 
     });
+}
+
+QString WaveViewer::appURI()
+{
+    return m_app_uri;
+}
+
+QString WaveViewer::canonicalize(QString uri)
+{
+    QStringList toks = uri.split("/",QString::SkipEmptyParts);
+    QStringList rtoks;
+    foreach(auto t, toks)
+    {
+        if (t == ".")
+        {
+            continue;
+        }
+        else if (t == "..")
+        {
+            if (!toks.isEmpty())
+            {
+                rtoks.removeLast();
+            }
+        }
+        else
+        {
+            rtoks.append(t);
+        }
+    }
+    return rtoks.join("/");
+
 }

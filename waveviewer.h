@@ -40,9 +40,9 @@ public:
      * @brief end the application and display the given error message
      * @param err the message to display
      *
-     * @since 1.0
+     * @since 1.1
      */
-    void fatal(QString err);
+    Q_INVOKABLE void fatal(QString err);
 
     /**
      * @brief Loads a wavelet at a given URI
@@ -54,6 +54,25 @@ public:
      * @since 1.0
      */
     Q_INVOKABLE void loadWavelet(QString uri);
+
+    /**
+     * @brief Returns the URI of the loaded app (
+     * @return The URI, up to but not including the i.wavelet
+     *
+     * @ingroup qml
+     * @since 1.1
+     */
+    Q_INVOKABLE QString appURI();
+
+    /**
+     * @brief Return a canonical form of a given URI
+     * @param The URI, possibly containing ".." or "."
+     * @return The URI with translated ".."s
+     *
+     * @ingroup qml
+     * @since 1.1
+     */
+    QString canonicalize(QString uri);
 
 private slots:
     void agentChanged();
@@ -73,6 +92,7 @@ private:
     PayloadObject* m_app_po;
     QTemporaryFile *m_app_f;
     bool m_app_loaded;
+    QString m_app_uri;
 };
 
 #endif // WAVEVIEWER_H
