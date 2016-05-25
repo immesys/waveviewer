@@ -30,9 +30,22 @@ void WaveViewer::agentChanged()
         fatal("Agent changed, but we are already active");
         return;
     }
-    bw->setEntityFromEnviron([&](QString s)
+#ifdef Q_OS_ANDROID
+    QString entity = "MiU3mmYOm1ax9pC3O9NGxW8c98EIflVB5wjVCrZYlvolca2zbPNtHtyKrB+4KEBPaSUUc/SVTRa5"\
+                     "xAiSj8QWVLQCCBqyNpKJz+MTAwjIEGiNErJjFAUQTWljaGFlbCBBbmRlcnNlbgYLTWljaGFlbCBE"\
+                     "ZXYAKncimST+tVScpAPkGKMV0xTQScLZ0wIijAuLaLXuyO86bXJ77peCrl7qFqFblpfdTfHezga5"\
+                     "J+3Q/E1Dlm2aBA==";
+    QByteArray inp;
+    inp.append(entity);
+    QByteArray ba = QByteArray::fromBase64(inp);
+    ba = ba.right(ba.size()-1);
+    bw->setEntity(ba,
+#else
+    bw->setEntityFromEnviron(
+#endif
+    [&](QString s)
     {
-        qDebug() << "got callback";
+        qDebug() << "got callback: " << s;
         if (!s.isEmpty())
         {
             fatal(QString("Could not set entity file: %1").arg(s));
@@ -114,6 +127,8 @@ void WaveViewer::appLoadComplete(QObject *obj, const QUrl &url)
     }
     else
     {
+        checkPreload();
+      //  QMetaObject::invokeMethod(robjz[0], "setthing", Q_ARG(QVariant, QString(cs)));
         //Initial window load
         //This is set by the publishing script
 #ifdef REAL_VERSION
@@ -132,6 +147,21 @@ void WaveViewer::appLoadComplete(QObject *obj, const QUrl &url)
     {
         qDebug("wass nil0");
     }*/
+}
+
+void WaveViewer::checkPreload()
+{
+    if (cs != "")
+    {
+        qDebug() << "cs non nil" << m_engine->rootObjects().size();
+        QMetaObject::invokeMethod(m_engine->rootObjects()[0], "setthing", Q_ARG(QVariant, QString(cs)));
+        loadWavelet(cs);
+    }
+    else
+    {
+        qDebug() << "cs nil" << m_engine->rootObjects().size();
+        QMetaObject::invokeMethod(m_engine->rootObjects()[0], "setthing", Q_ARG(QVariant, QString("no uri")));
+    }
 }
 
 void WaveViewer::loadWavelet(QString uri)

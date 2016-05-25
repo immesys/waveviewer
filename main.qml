@@ -67,9 +67,24 @@ ApplicationWindow {
       maintb.visible = false
     }
 
+    function setthing(st) {
+        url.text = st;
+    }
+
+
+
     Rectangle {
       anchors.fill: parent
       clip:true
       id: "appContainer"
     }
+//    Rectangle {
+//        anchors.fill: parent
+//             clip:true
+//             id: "appContainer"
+//             Label {
+//                 id:thelabel
+//                 text:"unset"
+//             }
+//    }
 }
