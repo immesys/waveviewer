@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QQmlApplicationEngine>
 #include <libbw.h>
-#include "openurlclient.h"
+
 #include <QAndroidJniObject>
 #include <QtAndroid>
 
@@ -23,7 +23,7 @@ public:
         m_app_loaded(false)
     {
         qmlRegisterSingletonType<WaveViewer>("WaveViewer", 1, 0, "WV", &WaveViewer::qmlSingleton);
-        OpenUrlClient *c = new OpenUrlClient(this);
+
         cs = "";
 #ifdef Q_OS_ANDROID
     qDebug() << "SXXXX: checking activity";
