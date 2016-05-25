@@ -34,11 +34,11 @@ public:
         qDebug() << "SXXXX: 2";
         if (intent.isValid()) {
             qDebug() << "SXXXX: 3";
-            QAndroidJniObject data = intent.callObjectMethod("getData", "()Landroid/net/Uri;");
+            QAndroidJniObject data = intent.callObjectMethod("getDataString", "()Ljava/lang/String;");
             qDebug() << "SXXXX: 4y";
             if (data.isValid()) {
                 cs = data.toString();
-                cs = cs.right(cs.length()-6);
+                cs = cs.right(cs.size()-6);
 #if 0
                 qDebug() << "SXXXX: 5";
                 QAndroidJniObject path = data.callObjectMethod("getPath", "()Ljava/lang/String;");
