@@ -11,7 +11,7 @@
 #endif
 
 #define VER_MAJOR 1
-#define VER_MINOR 1
+#define VER_MINOR 2
 
 class WaveViewer : public QObject
 {
@@ -25,7 +25,8 @@ public:
         m_app_loaded(false)
     {
         qmlRegisterSingletonType<WaveViewer>("WaveViewer", 1, 0, "WV", &WaveViewer::qmlSingleton);
-
+     //   qmlRegisterUncreatableType<BWView>("BOSSWAVEView", 1, 0, "View", "cannot create");
+    //    qRegisterMetaType<BWView*>();
         cs = "";
 #ifdef Q_OS_ANDROID
     qDebug() << "SXXXX: checking activity";

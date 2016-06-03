@@ -32,10 +32,6 @@ void WaveViewer::agentChanged()
         return;
     }
 #ifdef Q_OS_ANDROID
-    QString entity = "MiU3mmYOm1ax9pC3O9NGxW8c98EIflVB5wjVCrZYlvolca2zbPNtHtyKrB+4KEBPaSUUc/SVTRa5"\
-                     "xAiSj8QWVLQCCBqyNpKJz+MTAwjIEGiNErJjFAUQTWljaGFlbCBBbmRlcnNlbgYLTWljaGFlbCBE"\
-                     "ZXYAKncimST+tVScpAPkGKMV0xTQScLZ0wIijAuLaLXuyO86bXJ77peCrl7qFqFblpfdTfHezga5"\
-                     "J+3Q/E1Dlm2aBA==";
     QByteArray inp;
     inp.append(entity);
     QByteArray ba = QByteArray::fromBase64(inp);
@@ -54,6 +50,23 @@ void WaveViewer::agentChanged()
         }
         m_engine->load(QUrl(QStringLiteral("qrc:/main.qml")));
 
+        //HERE is where you put one-off debugging stuff
+//        auto qry = QVariantMap({
+//                                   {
+//                                        "ns",
+//                                        QStringList{"scratch.ns"}
+//                                   },
+//                                   {
+//                                       "meta",
+//                                       QVariantMap{
+//                                           {"inview","true"}
+//                                       }
+//                                   }
+//                                });
+//        bw->createView(qry, [=](QString s, BWView *v)
+//        {
+//           qDebug() << "view created. s=" << s;
+//        });
 
      /*   bw->publishMsgPack("/foo/bar", 5, {{"hello", 5}, {"foobar", "hiiii"}}, [](Status s)
         {
