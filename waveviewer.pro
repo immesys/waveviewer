@@ -10,6 +10,7 @@ RESOURCES += qml.qrc
 RESOURCES +=
 
 include(qtlibbw/bosswave.pri)
+include(mr-plotter-qml/mrplotter.pri)
 include(material/material.pri)
 
 QTPLUGIN += BOSSWAVE

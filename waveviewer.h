@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QQmlApplicationEngine>
 #include <libbw.h>
+#include <libmrplotter.h>
 
 #ifdef Q_OS_ANDROID
 #include <QAndroidJniObject>
