@@ -6,4 +6,4 @@
 	url = https://github.com/papyros/qml-material.git
 [submodule "mr-plotter-qml"]
 	path = mr-plotter-qml
-	url = git@github.com:SoftwareDefinedBuildings/mr-plotter-qml
+	url = https://github.com/SoftwareDefinedBuildings/mr-plotter-qml
