@@ -11,7 +11,7 @@
 #endif
 
 #define VER_MAJOR 1
-#define VER_MINOR 3
+#define VER_MINOR 4
 
 class WaveViewer : public QObject
 {
@@ -27,7 +27,7 @@ public:
         qmlRegisterSingletonType<WaveViewer>("WaveViewer", 1, 0, "WV", &WaveViewer::qmlSingleton);
      //   qmlRegisterUncreatableType<BWView>("BOSSWAVEView", 1, 0, "View", "cannot create");
     //    qRegisterMetaType<BWView*>();
-        cs = "";
+        intended_uri = "";
 #ifdef Q_OS_ANDROID
     qDebug() << "SXXXX: checking activity";
     QAndroidJniObject activity = QtAndroid::androidActivity();
@@ -89,15 +89,33 @@ public:
         bw = BW::instance();
         QObject::connect(bw, &BW::agentChanged, this, &WaveViewer::agentChanged);
         QObject::connect(m_engine, &QQmlApplicationEngine::objectCreated, this, &WaveViewer::appLoadComplete);
+        auto ent = getUsersEntity();
+        m_agent_conn = false;
+        if (ent.length() > 0)
+        {
+            m_has_ent = true;
+            bw->connectAgent(ent);//,"foo",123);
+        }
+        else
+        {
+            m_has_ent = false;
+        }
+
+       // bw->connectAgentWithFallback();
+
+#if 0
 #ifdef Q_OS_ANDROID
         bw->connectAgent("bunker.cs.berkeley.edu",28589);
 #else
         bw->connectAgent("localhost",28589);
 #endif
+#endif
+        m_engine->load(QUrl(QStringLiteral("qrc:/main.qml")));
     }
     static QObject *qmlSingleton(QQmlEngine *engine, QJSEngine *scriptEngine);
 
 
+    QByteArray getUsersEntity();
 
     /**
      * @brief gets the singleton instance of WaveViewer
@@ -162,7 +180,9 @@ private:
     QTemporaryFile *m_app_f;
     bool m_app_loaded;
     QString m_app_uri;
-    QString cs;
+    QString intended_uri;
+    bool m_has_ent;
+    bool m_agent_conn;
 };
 
 #endif // WAVEVIEWER_H

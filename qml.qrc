@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>MainMenu.qml</file>
     </qresource>
     <qresource prefix="/mainassets">
         <file alias="search.png">mainassets/search.png</file>

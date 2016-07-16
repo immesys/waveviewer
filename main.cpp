@@ -19,6 +19,5 @@ int main(int argc, char *argv[])
 
     WaveViewer *wv = WaveViewer::instance();
     Q_UNUSED(wv)
-
     return app.exec();
 }

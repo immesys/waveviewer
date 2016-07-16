@@ -13,43 +13,68 @@ ApplicationWindow {
     height: 768
     visible:true
     title: "Wavelet viewer"
-    objectName: "appwin"
-    toolBar: ToolBar {
-        id: "maintb"
-        style: ToolBarStyle{}
-        RowLayout {
-            anchors.fill: parent
-            ToolButton {
-                Image {
-                    source: "qrc:/mainassets/entity.png"
-                    anchors.fill: parent
-                    anchors.margins: 4
-                    mipmap: true
-                }
-            }
-            TextField {
-                Layout.fillWidth: true
+    id: appwin
+    property bool agentConnected : false
+//    toolBar: ToolBar {
+//        id: "maintb"
+//        style: ToolBarStyle{}
+//        RowLayout {
+//            anchors.fill: parent
+//            ToolButton {
+//                Image {
+//                    source: "qrc:/mainassets/entity.png"
+//                    anchors.fill: parent
+//                    anchors.margins: 4
+//                    mipmap: true
+//                }
+//            }
+//            TextField {
+//                Layout.fillWidth: true
 
-                style: TextFieldStyle{}
-                id: url
-                text: "410.dev/michael/s.helloworld/app"
-                onAccepted: {
-                    WV.loadWavelet(url.text)
-                }
-            }
-            ToolButton {
-                Image {
-                    source: "qrc:/mainassets/search.png"
-                    anchors.fill: parent
-                    anchors.margins: 4
-                    mipmap: true
-                }
-                onClicked: {
-                   WV.loadWavelet(url.text)
-                }
-            }
-        }
+//                style: TextFieldStyle{}
+//                id: url
+//                text: "410.dev/michael/s.helloworld/app"
+//                onAccepted: {
+//                    WV.loadWavelet(url.text)
+//                }
+//            }
+//            ToolButton {
+//                Image {
+//                    source: "qrc:/mainassets/search.png"
+//                    anchors.fill: parent
+//                    anchors.margins: 4
+//                    mipmap: true
+//                }
+//                onClicked: {
+//                   WV.loadWavelet(url.text)
+//                }
+//            }
+//        }
+//    }
+
+    MainMenu {
+        id: mainmenu
+        anchors.fill: parent
+        clip:true
+        visible:true
+        agentConnected: appwin.agentConnected
+        z: 1
     }
+    Rectangle {
+         anchors.fill: parent
+         clip:true
+         id: appContainer
+         visible:false
+         z: 2
+    }
+    function setState(entok,agentconn) {
+        console.log("ss:",agentconn, entok);
+    }
+
+  /*  function showmenu() {
+        mainmenu.visible = true
+    }*/
+
     /*
     statusBar: StatusBar {
       style: StatusBarStyle{}
@@ -61,23 +86,19 @@ ApplicationWindow {
 //    property var gg : Rectangle {
 //      color: "red"
 //    }
-    function loadMain (body) {
-      appContainer.children = [body]
-      body.anchors.fill = appContainer
-      maintb.visible = false
-    }
+//    function loadMain (body) {
+//      appContainer.children = [body]
+//      body.anchors.fill = appContainer
+//      maintb.visible = false
+//    }
 
-    function setthing(st) {
-        url.text = st;
-    }
+//    function setthing(st) {
+//        url.text = st;
+//    }
 
 
 
-    Rectangle {
-      anchors.fill: parent
-      clip:true
-      id: "appContainer"
-    }
+
 //    Rectangle {
 //        anchors.fill: parent
 //             clip:true
