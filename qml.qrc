@@ -6,5 +6,8 @@
     <qresource prefix="/mainassets">
         <file alias="search.png">mainassets/search.png</file>
         <file alias="entity.png">mainassets/entity.png</file>
+        <file alias="account.png">mainassets/ic_account_box_black_48dp.png</file>
+        <file alias="camera.png">mainassets/ic_camera_black_48dp.png</file>
+        <file alias="browser.png">mainassets/ic_open_in_browser_black_48dp.png</file>
     </qresource>
 </RCC>

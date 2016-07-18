@@ -25,67 +25,22 @@ public:
         m_app_loaded(false)
     {
         qmlRegisterSingletonType<WaveViewer>("WaveViewer", 1, 0, "WV", &WaveViewer::qmlSingleton);
-     //   qmlRegisterUncreatableType<BWView>("BOSSWAVEView", 1, 0, "View", "cannot create");
-    //    qRegisterMetaType<BWView*>();
         intended_uri = "";
 #ifdef Q_OS_ANDROID
-    qDebug() << "SXXXX: checking activity";
     QAndroidJniObject activity = QtAndroid::androidActivity();
     if (activity.isValid()) {
-        qDebug() << "SXXXX: 1";
         QAndroidJniObject intent = activity.callObjectMethod("getIntent", "()Landroid/content/Intent;");
-        qDebug() << "SXXXX: 2";
         if (intent.isValid()) {
-            qDebug() << "SXXXX: 3";
             QAndroidJniObject data = intent.callObjectMethod("getDataString", "()Ljava/lang/String;");
-            qDebug() << "SXXXX: 4y";
             if (data.isValid()) {
-                cs = data.toString();
-                cs = cs.right(cs.size()-6);
-#if 0
-                qDebug() << "SXXXX: 5";
-                QAndroidJniObject path = data.callObjectMethod("getPath", "()Ljava/lang/String;");
-                qDebug() << "SXXXX: 6";
-                if (path.isValid())
-                {
-                    qDebug() << "SXXXX: 7";
-                    // Here path.toString() returns the path of the input file
-                  //  cs = path.toString();
-                    //QMetaObject::invokeMethod(rootComponent, "setSourcePath", Q_ARG(QVariant, QVariant("file://" + path.toString())));
-                }
-                else{
-                    qDebug() << "SXXXX: 8";
-
-                }
-#endif
-            }
-            else{
-                qDebug() << "SXXXX: 9";
-
+                intended_uri = data.toString();
+                intended_uri = intended_uri.right(cs.size()-6);
             }
         }
-        else{
-            qDebug() << "SXXXX: 10";
-
-        }
     }
-    else{
-        qDebug() << "SXXXX: 11";
-
-    }
-    //QMetaObject::invokeMethod(m_engine->rootObjects()[0], "setthing", Q_ARG(QVariant, cs));
 #endif
         m_engine = new QQmlApplicationEngine();
         m_engine->addImportPath(":/.");
-     //   connect(c,&OpenUrlClient::urlSelected, this, [=](QString s)
-     //   {
-         //   cs = s;
-           /* if (m_engine->rootObjects().size() > 0)
-            {
-                QMetaObject::invokeMethod(m_engine->rootObjects()[0], "setthing", Q_ARG(QVariant, s));
-            }*/
-
-    //    });
         bw = BW::instance();
         QObject::connect(bw, &BW::agentChanged, this, &WaveViewer::agentChanged);
         QObject::connect(m_engine, &QQmlApplicationEngine::objectCreated, this, &WaveViewer::appLoadComplete);
@@ -94,26 +49,19 @@ public:
         if (ent.length() > 0)
         {
             m_has_ent = true;
-            bw->connectAgent(ent);//,"foo",123);
+            bw->connectAgent(ent);
         }
         else
         {
             m_has_ent = false;
         }
 
-       // bw->connectAgentWithFallback();
-
-#if 0
-#ifdef Q_OS_ANDROID
-        bw->connectAgent("bunker.cs.berkeley.edu",28589);
-#else
-        bw->connectAgent("localhost",28589);
-#endif
-#endif
         m_engine->load(QUrl(QStringLiteral("qrc:/main.qml")));
     }
     static QObject *qmlSingleton(QQmlEngine *engine, QJSEngine *scriptEngine);
 
+    Q_INVOKABLE QList<QString> getRecentURIs();
+    Q_INVOKABLE void removeRecentURI(QString uri);
 
     QByteArray getUsersEntity();
 

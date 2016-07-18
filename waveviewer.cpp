@@ -71,27 +71,6 @@ void WaveViewer::agentChanged()
         m_agent_conn = true;
         checkPreload();
     });
-#if 0
-#ifdef Q_OS_ANDROID
-    QByteArray inp;
-    inp.append(entity);
-    QByteArray ba = QByteArray::fromBase64(inp);
-    ba = ba.right(ba.size()-1);
-    bw->setEntity(ba,
-#else
-    bw->setEntityFromEnviron(
-#endif
-    [&](QString s, QString vk)
-    {
-        qDebug() << "got callback: " << s;
-        if (!s.isEmpty())
-        {
-            fatal(QString("Could not set entity file: %1").arg(s));
-            return;
-        }
-
-    });
-#endif
 }
 
 QObject *WaveViewer::qmlSingleton(QQmlEngine *engine, QJSEngine *scriptEngine)
@@ -110,7 +89,6 @@ WaveViewer *WaveViewer::instance()
 
 void WaveViewer::switchapp(PMessage app_msg, PayloadObject* app)
 {
-    qDebug() << "switchapp called";
     m_app_msg = app_msg;
     m_app_po = app;
     m_app_f = new QTemporaryFile();
@@ -123,28 +101,15 @@ void WaveViewer::switchapp(PMessage app_msg, PayloadObject* app)
         {
             fatal("Could not load application");
         }
-       // QQmlComponent *newApp = new QQmlComponent(m_engine, QUrl("qrc:/app/app/src/main.qml"), QQmlComponent::Asynchronous);
-       // newApp->
         m_engine->load(QUrl("qrc:/app/src/main.qml"));
     }
     else
     {
         fatal(QString("Could not create temporary file"));
     }
-   /* bool res = QResource::registerResource("loaded.rcc","/app");
-    qDebug() << "res result: " << res;
-    m_engine->load(QUrl("qrc:/app/app/src/main.qml"));*/
-   /*
-    f->open(QFile::WriteOnly);
-    f->write(app->content(), app->length());
-    f->close();*/
-    //delete f;
-
-
 }
 void WaveViewer::appLoadComplete(QObject *obj, const QUrl &url)
 {
-    qDebug("app load complete happened");
     if (obj == nullptr)
     {
         fatal(QString("Could not load application at %1").arg(url.toString()));

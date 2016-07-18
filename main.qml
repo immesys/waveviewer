@@ -15,6 +15,7 @@ ApplicationWindow {
     title: "Wavelet viewer"
     id: appwin
     property bool agentConnected : false
+    property bool entityOk : false
 //    toolBar: ToolBar {
 //        id: "maintb"
 //        style: ToolBarStyle{}
@@ -58,6 +59,7 @@ ApplicationWindow {
         clip:true
         visible:true
         agentConnected: appwin.agentConnected
+        entityOk: appwin.entityOk
         z: 1
     }
     Rectangle {
@@ -68,29 +70,18 @@ ApplicationWindow {
          z: 2
     }
     function setState(entok,agentconn) {
+        agentConnected = agentconn
+        entityOk = entok
+        mainmenu.entityChecked = true
         console.log("ss:",agentconn, entok);
     }
 
-  /*  function showmenu() {
-        mainmenu.visible = true
-    }*/
-
-    /*
-    statusBar: StatusBar {
-      style: StatusBarStyle{}
-      RowLayout {
-                anchors.fill: parent
-                Label { text: "Read Only" }
-            }
-    }*/
-//    property var gg : Rectangle {
-//      color: "red"
-//    }
-//    function loadMain (body) {
-//      appContainer.children = [body]
-//      body.anchors.fill = appContainer
-//      maintb.visible = false
-//    }
+    function loadMain (body) {
+      appContainer.children = [body]
+      appContainer.visible = true
+      body.anchors.fill = appContainer
+     // maintb.visible = false
+    }
 
 //    function setthing(st) {
 //        url.text = st;
