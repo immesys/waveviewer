@@ -26,6 +26,7 @@ WaveViewer::WaveViewer() : QObject(),
     m_app_f(nullptr),
     m_app_loaded(false)
 {
+    qDebug() << "constructing waveviewer";
     qmlRegisterSingletonType<WaveViewer>("WaveViewer", 1, 0, "WV", &WaveViewer::qmlSingleton);
     loadFavorites();
     intended_uri = "";
@@ -37,7 +38,7 @@ if (activity.isValid()) {
         QAndroidJniObject data = intent.callObjectMethod("getDataString", "()Ljava/lang/String;");
         if (data.isValid()) {
             intended_uri = data.toString();
-            intended_uri = intended_uri.right(cs.size()-6);
+            intended_uri = intended_uri.right(intended_uri.size()-6);
         }
     }
 }
@@ -52,6 +53,7 @@ if (activity.isValid()) {
     if (ent.length() > 0)
     {
         m_has_ent = true;
+        qDebug() << "has ent was true";
         bw->connectAgent(ent);
     }
     else
@@ -134,7 +136,12 @@ void WaveViewer::addRecentURI(QString uri)
 
 QByteArray WaveViewer::getUsersEntity()
 {
+#ifdef Q_OS_ANDROID
+
+    QString entitypath = QString("/storage/self/primary/WaveViewer/defaultEntity.ent");//QStandardPaths::locate(QStandardPaths::AppDataLocation, "defaultEntity.ent");
+  #else
     QString entitypath = QStandardPaths::locate(QStandardPaths::AppDataLocation, "defaultEntity.ent");
+#endif
     if (entitypath.length() == 0)
     {
         //Try environment variable
@@ -157,11 +164,13 @@ QByteArray WaveViewer::getUsersEntity()
 
 void WaveViewer::agentChanged()
 {
+    qDebug() << "agent changed";
     if (m_active)
     {
         fatal("Agent changed, but we are already active");
         return;
     }
+
     //Agent has connected. If we have an entity, try load the URI, otherwise
     //display the menu
     QByteArray entity = getUsersEntity();
@@ -175,6 +184,7 @@ void WaveViewer::agentChanged()
             fatal(QString("Could not set entity file: %1").arg(s));
             return;
         }
+        qDebug() << "sete done" << s;
         //Ok we are good to go
         m_agent_conn = true;
         checkPreload();

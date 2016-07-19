@@ -12,8 +12,9 @@
 
 int main(int argc, char *argv[])
 {
+    qDebug() << "init guiapp";
     QGuiApplication app(argc, argv);
-
+    qDebug() << "finished init guiapp";
     initLibBW();
     initLibMrPlotter();
 
