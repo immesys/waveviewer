@@ -9,7 +9,7 @@
 #include <QCoreApplication>
 #include <QStandardPaths>
 #include "real_version.h"
-
+#include <QDir>
 class MaterialRegisterHelper {
 
 public:
@@ -19,9 +19,117 @@ public:
     }
 };
 
+WaveViewer::WaveViewer() : QObject(),
+    m_active(false),
+    m_app_msg(nullptr),
+    m_app_po(nullptr),
+    m_app_f(nullptr),
+    m_app_loaded(false)
+{
+    qmlRegisterSingletonType<WaveViewer>("WaveViewer", 1, 0, "WV", &WaveViewer::qmlSingleton);
+    loadFavorites();
+    intended_uri = "";
+#ifdef Q_OS_ANDROID
+QAndroidJniObject activity = QtAndroid::androidActivity();
+if (activity.isValid()) {
+    QAndroidJniObject intent = activity.callObjectMethod("getIntent", "()Landroid/content/Intent;");
+    if (intent.isValid()) {
+        QAndroidJniObject data = intent.callObjectMethod("getDataString", "()Ljava/lang/String;");
+        if (data.isValid()) {
+            intended_uri = data.toString();
+            intended_uri = intended_uri.right(cs.size()-6);
+        }
+    }
+}
+#endif
+    m_engine = new QQmlApplicationEngine();
+    m_engine->addImportPath(":/.");
+    bw = BW::instance();
+    QObject::connect(bw, &BW::agentChanged, this, &WaveViewer::agentChanged);
+    QObject::connect(m_engine, &QQmlApplicationEngine::objectCreated, this, &WaveViewer::appLoadComplete);
+    auto ent = getUsersEntity();
+    m_agent_conn = false;
+    if (ent.length() > 0)
+    {
+        m_has_ent = true;
+        bw->connectAgent(ent);
+    }
+    else
+    {
+        m_has_ent = false;
+    }
+    QMetaObject::invokeMethod(m_engine,"load",Qt::QueuedConnection, Q_ARG(QUrl,QUrl(QStringLiteral("qrc:/main.qml"))));
+}
 void WaveViewer::fatal(QString err)
 {
    qFatal("fatal error: %s", err.toStdString().c_str());
+}
+
+void WaveViewer::loadFavorites()
+{
+    QString favpath = QStandardPaths::locate(QStandardPaths::AppDataLocation, "favorites.bin");
+    if (favpath.length() == 0)
+    {
+        qDebug() << "could not find path";
+        favorites = QStringList();
+        return;
+    }
+    QFile f(favpath);
+    if (!f.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "could not open favorites file";
+        favorites = QStringList();
+        return;
+    }
+    QDataStream ds(&f);
+    ds >> this->favorites;
+    qDebug() << "loaded" << this->favorites;
+    return;
+}
+
+void WaveViewer::saveFavorites()
+{
+    QString favpath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir(favpath).mkpath(".");//::mkpath(favpath);
+    favpath += "/favorites.bin";
+    qDebug() << "writing to" << favpath;
+    QFile f(favpath);
+    if (!f.open(QIODevice::WriteOnly))
+    {
+        qDebug() << "could not open favorites file";
+        return;
+    }
+    QDataStream ds(&f);
+    ds << this->favorites;
+    return;
+}
+
+QStringList WaveViewer::getRecentURIs()
+{
+    qDebug() << "no big deal brah";
+    return favorites;
+}
+void WaveViewer::removeRecentURI(QString uri)
+{
+    QStringList nlist;
+    foreach(auto s, favorites)
+    {
+        if (s != uri) nlist.append(s);
+    }
+    favorites = nlist;
+    saveFavorites();
+}
+void WaveViewer::addRecentURI(QString uri)
+{
+    QStringList nlist;
+    nlist.append(uri);
+    foreach(auto s, favorites)
+    {
+        if (s != uri) nlist.append(s);
+    }
+    favorites = nlist;
+    qDebug() << "saving" << nlist;
+    saveFavorites();
 }
 
 QByteArray WaveViewer::getUsersEntity()
@@ -241,6 +349,7 @@ void WaveViewer::loadWavelet(QString uri)
             qFatal("should do metadata search here");
             return;
         }
+        addRecentURI(m_app_uri);
         auto m = results[0];
         auto poz = m->FilterPOs(bwpo::num::Wavelet);
         if (poz.length() == 0) {

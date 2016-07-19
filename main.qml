@@ -16,42 +16,6 @@ ApplicationWindow {
     id: appwin
     property bool agentConnected : false
     property bool entityOk : false
-//    toolBar: ToolBar {
-//        id: "maintb"
-//        style: ToolBarStyle{}
-//        RowLayout {
-//            anchors.fill: parent
-//            ToolButton {
-//                Image {
-//                    source: "qrc:/mainassets/entity.png"
-//                    anchors.fill: parent
-//                    anchors.margins: 4
-//                    mipmap: true
-//                }
-//            }
-//            TextField {
-//                Layout.fillWidth: true
-
-//                style: TextFieldStyle{}
-//                id: url
-//                text: "410.dev/michael/s.helloworld/app"
-//                onAccepted: {
-//                    WV.loadWavelet(url.text)
-//                }
-//            }
-//            ToolButton {
-//                Image {
-//                    source: "qrc:/mainassets/search.png"
-//                    anchors.fill: parent
-//                    anchors.margins: 4
-//                    mipmap: true
-//                }
-//                onClicked: {
-//                   WV.loadWavelet(url.text)
-//                }
-//            }
-//        }
-//    }
 
     MainMenu {
         id: mainmenu
@@ -66,8 +30,8 @@ ApplicationWindow {
          anchors.fill: parent
          clip:true
          id: appContainer
-         visible:false
-         z: 2
+         visible:true
+         z: -1
     }
     function setState(entok,agentconn) {
         agentConnected = agentconn
@@ -78,25 +42,8 @@ ApplicationWindow {
 
     function loadMain (body) {
       appContainer.children = [body]
-      appContainer.visible = true
+      appContainer.z = 3
       body.anchors.fill = appContainer
-     // maintb.visible = false
     }
 
-//    function setthing(st) {
-//        url.text = st;
-//    }
-
-
-
-
-//    Rectangle {
-//        anchors.fill: parent
-//             clip:true
-//             id: "appContainer"
-//             Label {
-//                 id:thelabel
-//                 text:"unset"
-//             }
-//    }
 }

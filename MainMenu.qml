@@ -58,27 +58,25 @@ Rectangle {
 //    }
 
 
-    Rectangle {
-        color:"#D8D8D8"
+    Button {
+        //color:"#D8D8D8"
         id: go
         width:100*Screen.devicePixelRatio
         height:100*Screen.devicePixelRatio
         anchors.top:url.bottom
+        enabled:url.text.length > 0
         anchors.right:url.right
         anchors.topMargin: 20
         Image {
             anchors.fill:parent
             source: "qrc:/mainassets/browser.png"
         }
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                 WV.loadWavelet(url.text)
-            }
+        onClicked: {
+             WV.loadWavelet(url.text)
         }
+
     }
-    Rectangle {
-        color:"#D8D8D8"
+    Button {
         id:setebutton
         width:100*Screen.devicePixelRatio
         height:100*Screen.devicePixelRatio
@@ -90,9 +88,11 @@ Rectangle {
             anchors.fill:parent
             source: "qrc:/mainassets/account.png"
         }
+        onClicked: {
+            console.log(WV.getRecentURIs());
+        }
     }
-    Rectangle {
-        color:"#D8D8D8"
+    Button {
         id:qrcodebutton
         width:100*Screen.devicePixelRatio
         height:100*Screen.devicePixelRatio
@@ -105,6 +105,59 @@ Rectangle {
             source: "qrc:/mainassets/camera.png"
         }
     }
+   ListView {
+       id:recent
+       clip:true
+        anchors.top:setebutton.bottom
+        anchors.left:parent.left
+        anchors.right:parent.right
+        anchors.bottom:parent.bottom
+        anchors.margins: 20
+        delegate: Item {
+            height:40 * Screen.devicePixelRatio
+            width:parent.width
+            Rectangle {
+                id:recurl
+                width:parent.width - parent.height - 4
+                height:parent.height
+                anchors.left:parent.left
+                anchors.top:parent.top
+                Text {
+                    anchors.fill:parent
+                    verticalAlignment: Text.AlignVCenter
+                    font.pointSize: 20
+                    anchors.margins: 10
+                    text: modelData
+                }
+                MouseArea {
+                    anchors.fill:parent
+                    onClicked: {
+                        WV.loadWavelet(modelData)
+                    }
+                }
+            }
+            Button {
+                width: parent.height
+                height:parent.height
+                anchors.left:recurl.right
+                anchors.leftMargin: 3
+                anchors.top:parent.top
+                text: "X"
+                onClicked: {
+                    WV.removeRecentURI(modelData);
+                    recent.model = WV.getRecentURIs();
+                }
+            }
+
+
+
+        }
+    }
+   Component.onCompleted: {
+        //WV.getRecentURIs();
+       recent.model = WV.getRecentURIs();
+   }
+
 
 
 

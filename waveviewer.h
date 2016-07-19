@@ -17,50 +17,12 @@ class WaveViewer : public QObject
 {
     Q_OBJECT
 public:
-    WaveViewer() : QObject(),
-        m_active(false),
-        m_app_msg(nullptr),
-        m_app_po(nullptr),
-        m_app_f(nullptr),
-        m_app_loaded(false)
-    {
-        qmlRegisterSingletonType<WaveViewer>("WaveViewer", 1, 0, "WV", &WaveViewer::qmlSingleton);
-        intended_uri = "";
-#ifdef Q_OS_ANDROID
-    QAndroidJniObject activity = QtAndroid::androidActivity();
-    if (activity.isValid()) {
-        QAndroidJniObject intent = activity.callObjectMethod("getIntent", "()Landroid/content/Intent;");
-        if (intent.isValid()) {
-            QAndroidJniObject data = intent.callObjectMethod("getDataString", "()Ljava/lang/String;");
-            if (data.isValid()) {
-                intended_uri = data.toString();
-                intended_uri = intended_uri.right(cs.size()-6);
-            }
-        }
-    }
-#endif
-        m_engine = new QQmlApplicationEngine();
-        m_engine->addImportPath(":/.");
-        bw = BW::instance();
-        QObject::connect(bw, &BW::agentChanged, this, &WaveViewer::agentChanged);
-        QObject::connect(m_engine, &QQmlApplicationEngine::objectCreated, this, &WaveViewer::appLoadComplete);
-        auto ent = getUsersEntity();
-        m_agent_conn = false;
-        if (ent.length() > 0)
-        {
-            m_has_ent = true;
-            bw->connectAgent(ent);
-        }
-        else
-        {
-            m_has_ent = false;
-        }
 
-        m_engine->load(QUrl(QStringLiteral("qrc:/main.qml")));
-    }
+    WaveViewer();
+
     static QObject *qmlSingleton(QQmlEngine *engine, QJSEngine *scriptEngine);
 
-    Q_INVOKABLE QList<QString> getRecentURIs();
+    Q_INVOKABLE QStringList getRecentURIs();
     Q_INVOKABLE void removeRecentURI(QString uri);
 
     QByteArray getUsersEntity();
@@ -109,10 +71,15 @@ public:
     QString canonicalize(QString uri);
 
     Q_INVOKABLE void checkPreload();
+
+    void addRecentURI(QString uri);
 private slots:
     void agentChanged();
     void appLoadComplete(QObject *obj, const QUrl &url);
 private:
+
+    void loadFavorites();
+    void saveFavorites();
 
     void switchapp(PMessage app_msg, PayloadObject* app);
 
@@ -131,6 +98,7 @@ private:
     QString intended_uri;
     bool m_has_ent;
     bool m_agent_conn;
+    QList<QString> favorites;
 };
 
 #endif // WAVEVIEWER_H
