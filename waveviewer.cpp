@@ -105,6 +105,11 @@ void WaveViewer::saveFavorites()
     ds << this->favorites;
     return;
 }
+void WaveViewer::setDefaultEntityFile(QString file)
+{
+    QString loc = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+QString("/defaultEntity.ent");
+    QFile::copy(file, loc);
+}
 
 QStringList WaveViewer::getRecentURIs()
 {

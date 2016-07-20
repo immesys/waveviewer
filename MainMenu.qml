@@ -1,7 +1,9 @@
+
 import QtQuick 2.6
-import QtQuick.Controls 1.4
-import QtQuick.Window 2.2
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.0
+import QtQuick.Window 2.0
+import QtQuick.Dialogs 1.2
+import QtQuick.Controls.Material 2.0
 import WaveViewer 1.0
 
 Rectangle {
@@ -22,7 +24,7 @@ Rectangle {
         anchors.right:parent.right
         anchors.margins: 20
         id:url
-        style: TextFieldStyle{}
+        inputMethodHints: Qt.ImhUrlCharactersOnly
         onAccepted: {
             WV.loadWavelet(url.text)
         }
@@ -61,8 +63,8 @@ Rectangle {
     Button {
         //color:"#D8D8D8"
         id: go
-        width:100*Screen.devicePixelRatio
-        height:100*Screen.devicePixelRatio
+        width:100
+        height:100
         anchors.top:url.bottom
         enabled:url.text.length > 0
         anchors.right:url.right
@@ -76,10 +78,12 @@ Rectangle {
         }
 
     }
+
+
     Button {
         id:setebutton
-        width:100*Screen.devicePixelRatio
-        height:100*Screen.devicePixelRatio
+        width:100
+        height:100
         anchors.top:url.bottom
         anchors.topMargin: 20
         anchors.right:go.left
@@ -89,13 +93,13 @@ Rectangle {
             source: "qrc:/mainassets/account.png"
         }
         onClicked: {
-            console.log(WV.getRecentURIs());
+            fd.open()
         }
     }
     Button {
         id:qrcodebutton
-        width:100*Screen.devicePixelRatio
-        height:100*Screen.devicePixelRatio
+        width:100
+        height:100
         anchors.top:url.bottom
         anchors.right:setebutton.left
         anchors.topMargin: 20
@@ -114,7 +118,7 @@ Rectangle {
         anchors.bottom:parent.bottom
         anchors.margins: 20
         delegate: Item {
-            height:40 * Screen.devicePixelRatio
+            height:txt.implicitHeight
             width:parent.width
             Rectangle {
                 id:recurl
@@ -123,6 +127,7 @@ Rectangle {
                 anchors.left:parent.left
                 anchors.top:parent.top
                 Text {
+                    id: txt
                     anchors.fill:parent
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 20
@@ -153,6 +158,13 @@ Rectangle {
 
         }
     }
+   FileDialog {
+       id: fd
+       title: "Select entity file"
+       onAccepted: {
+           WV.setDefaultEntityFile(fd.fileUrl)
+       }
+   }
    Component.onCompleted: {
         //WV.getRecentURIs();
        recent.model = WV.getRecentURIs();

@@ -51,6 +51,8 @@ public:
      */
     Q_INVOKABLE void loadWavelet(QString uri);
 
+    Q_INVOKABLE void setDefaultEntityFile(QString file);
+
     /**
      * @brief Returns the URI of the loaded app (
      * @return The URI, up to but not including the i.wavelet
