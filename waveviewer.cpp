@@ -10,6 +10,7 @@
 #include <QStandardPaths>
 #include "real_version.h"
 #include <QDir>
+#include <QUrl>
 class MaterialRegisterHelper {
 
 public:
@@ -107,8 +108,10 @@ void WaveViewer::saveFavorites()
 }
 void WaveViewer::setDefaultEntityFile(QString file)
 {
-    QString loc = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+QString("/defaultEntity.ent");
-    QFile::copy(file, loc);
+    QString loc = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir(loc).mkpath(".");
+    loc+=QString("/defaultEntity.ent");
+    QFile of(QUrl(file).toLocalFile());
 }
 
 QStringList WaveViewer::getRecentURIs()
