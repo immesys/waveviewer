@@ -187,6 +187,8 @@ void WaveViewer::agentChanged()
     }
     bw->setEntity(entity,[&](QString s, QString vk)
     {
+        Q_UNUSED(vk);
+
         if (!s.isEmpty())
         {
             fatal(QString("Could not set entity file: %1").arg(s));
