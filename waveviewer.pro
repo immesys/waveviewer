@@ -12,6 +12,7 @@ RESOURCES +=
 include(qtlibbw/bosswave.pri)
 include(mr-plotter-qml/mrplotter.pri)
 include(material/material.pri)
+include(qzxing-waveviewer/source/QZXing.pri)
 
 QTPLUGIN += BOSSWAVE
 

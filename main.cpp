@@ -5,6 +5,7 @@
 #include <QAndroidJniObject>
 #include <QtAndroid>
 #endif
+#include <QZXing.h>
 #include "waveviewer.h"
 
 #include <libbw.h>
@@ -17,6 +18,7 @@ int main(int argc, char *argv[])
     qDebug() << "finished init guiapp";
     initLibBW();
     initLibMrPlotter();
+    QZXing::registerQMLTypes();
 
     WaveViewer *wv = WaveViewer::instance();
     Q_UNUSED(wv)

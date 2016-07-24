@@ -1,10 +1,13 @@
 
 import QtQuick 2.6
-import QtQuick.Controls 2.0
+import QtQuick.Controls 1.0
 import QtQuick.Window 2.0
 import QtQuick.Dialogs 1.2
-import QtQuick.Controls.Material 2.0
 import WaveViewer 1.0
+
+import QtMultimedia 5.6
+
+import QZXing 2.3
 
 Rectangle {
     color: "#707070"
@@ -29,6 +32,7 @@ Rectangle {
             WV.loadWavelet(url.text)
         }
     }
+
     Text {
         anchors.top: url.bottom
         anchors.left: url.left
@@ -79,6 +83,28 @@ Rectangle {
 
     }
 
+    function initiateQRPic(isEntityQR)
+    {
+        camera.entity = isEntityQR;
+
+        if (camera.availability == Camera.Unavailable)
+        {
+            message.title = "Error";
+            message.text = "Unfortunately, QR code functionality is not supported on your device.";
+            message.visible = true;
+            return;
+        }
+
+        camera.start();
+        videoOutput.visible = true;
+    }
+
+    function captureQRPic()
+    {
+        camera.imageCapture.capture();
+        videoOutput.visible = false;
+    }
+
 
     Button {
         id:setebutton
@@ -93,9 +119,17 @@ Rectangle {
             source: "qrc:/mainassets/account.png"
         }
         onClicked: {
-            fd.open()
+            if (Qt.platform.os === "android")
+            {
+                initiateQRPic(true);
+            }
+            else
+            {
+                fd.open()
+            }
         }
     }
+
     Button {
         id:qrcodebutton
         width:100
@@ -108,10 +142,14 @@ Rectangle {
             anchors.fill:parent
             source: "qrc:/mainassets/camera.png"
         }
+        onClicked: {
+            initiateQRPic(false);
+        }
     }
-   ListView {
-       id:recent
-       clip:true
+
+    ListView {
+        id:recent
+        clip:true
         anchors.top:setebutton.bottom
         anchors.left:parent.left
         anchors.right:parent.right
@@ -158,17 +196,100 @@ Rectangle {
 
         }
     }
-   FileDialog {
-       id: fd
-       title: "Select entity file"
-       onAccepted: {
-           WV.setDefaultEntityFile(fd.fileUrl)
-       }
-   }
-   Component.onCompleted: {
-        //WV.getRecentURIs();
-       recent.model = WV.getRecentURIs();
-   }
+
+    QZXing {
+        id: qrdecoder
+        enabledDecoders: QZXing.DecoderFormat_QR_CODE
+        onDecodingFinished: {
+            if (!succeeded)
+            {
+                message.title = "Failure";
+                message.text = "Could not parse QR code. Please try again.";
+                message.visible = true;
+            }
+        }
+    }
+
+    Camera {
+        id: camera
+        cameraState: Camera.UnloadedState
+
+        property bool entity: false
+
+        focus {
+            focusMode: Camera.FocusContinuous
+        }
+
+        imageCapture {
+            onImageCaptured: {
+                var decoded = qrdecoder.decodeImageQML(":/camera/preview_1");
+                if (decoded.length > 0)
+                {
+                    if (entity)
+                    {
+                        var res = WV.setUsersEntity(decoded);
+                        console.log("Set entity: " + res);
+                        if (res)
+                        {
+                            message.title = "Success";
+                            message.text = "The entity was successfully changed.";
+                            message.visible = true;
+                        }
+                        else
+                        {
+                            message.title = "Failure";
+                            message.text = "The entity could not be set due to an internal error."
+                            message.visible = true;
+                        }
+                    }
+                    else
+                    {
+                        WV.loadWavelet(decoded);
+                    }
+                }
+                camera.stop();
+            }
+        }
+    }
+
+    VideoOutput {
+        id: videoOutput
+
+        source: camera
+        anchors.fill: parent
+        focus: visible
+        visible: false
+
+        autoOrientation: true
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                captureQRPic();
+            }
+        }
+    }
+
+    FileDialog {
+        id: fd
+        title: "Select entity file"
+        onAccepted: {
+            WV.setDefaultEntityFile(fd.fileUrl)
+        }
+    }
+
+    MessageDialog {
+        id: message
+        visible: false
+        onAccepted: {
+            message.visible = false;
+        }
+    }
+
+    Component.onCompleted: {
+         //WV.getRecentURIs();
+        recent.model = WV.getRecentURIs();
+    }
 
 
 
