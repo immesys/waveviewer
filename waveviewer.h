@@ -27,6 +27,9 @@ public:
 
     QByteArray getUsersEntity();
 
+    Q_INVOKABLE bool setUsersEntity(const QByteArray& entity);
+    Q_INVOKABLE bool setUsersEntity(const QString& entity);
+
     /**
      * @brief gets the singleton instance of WaveViewer
      */
@@ -83,6 +86,7 @@ private:
     void loadFavorites();
     void saveFavorites();
 
+    QString getEntityPath();
     void switchapp(PMessage app_msg, PayloadObject* app);
 
 

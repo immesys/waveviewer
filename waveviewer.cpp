@@ -65,7 +65,7 @@ if (activity.isValid()) {
 }
 void WaveViewer::fatal(QString err)
 {
-   qFatal("fatal error: %s", err.toStdString().c_str());
+     qFatal("fatal error: %s", err.toStdString().c_str());
 }
 
 void WaveViewer::loadFavorites()
@@ -142,14 +142,61 @@ void WaveViewer::addRecentURI(QString uri)
     saveFavorites();
 }
 
+QString WaveViewer::getEntityPath()
+{
+    QString path;
+#ifdef Q_OS_ANDROID
+    path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir dir(path);
+    if (!dir.exists())
+    {
+        bool res = dir.mkpath(".");
+        qDebug("Success: %d", res);
+    }
+    path += QString("/defaultEntity.ent");
+    qDebug("Path: %s", qPrintable(path));
+#else
+    path = QStandardPaths::locate(QStandardPaths::AppDataLocation, "defaultEntity.ent");
+#endif
+
+    return path;
+}
+
+bool WaveViewer::setUsersEntity(const QByteArray& entity)
+{
+    QString entitypath = getEntityPath();
+    if (entitypath.length() == 0)
+    {
+        return false;
+    }
+    QFile f(entitypath);
+    if (!f.open(QIODevice::ReadWrite | QIODevice::Truncate))
+    {
+        qDebug() << "could not open entity file";
+        return false;
+    }
+    qint64 written = f.write(entity);
+    f.close();
+    if (entity.length() != written)
+    {
+        return false;
+    }
+    qDebug("Length is %d", entity.length());
+    agentChanged();
+    return true;
+}
+
+bool WaveViewer::setUsersEntity(const QString& entity)
+{
+    QByteArray entityarr;
+    entityarr.append(entity);
+    QByteArray entitydec = QByteArray::fromBase64(entityarr);
+    return this->setUsersEntity(entitydec);
+}
+
 QByteArray WaveViewer::getUsersEntity()
 {
-#ifdef Q_OS_ANDROID
-
-    QString entitypath = QString("/storage/self/primary/WaveViewer/defaultEntity.ent");//QStandardPaths::locate(QStandardPaths::AppDataLocation, "defaultEntity.ent");
-  #else
-    QString entitypath = QStandardPaths::locate(QStandardPaths::AppDataLocation, "defaultEntity.ent");
-#endif
+    QString entitypath = getEntityPath();
     if (entitypath.length() == 0)
     {
         //Try environment variable
@@ -185,8 +232,18 @@ void WaveViewer::agentChanged()
     if (entity.length() == 0) {
         qFatal("must show menu to select entity");
     }
-    bw->setEntity(entity,[&](QString s, QString vk)
+
+    if (!m_has_ent)
     {
+        m_has_ent = true;
+        qDebug() << "has ent was true";
+        bw->connectAgent(entity);
+    }
+
+    bw->setEntity(entity, [&](QString s, QString vk)
+    {
+        Q_UNUSED(vk);
+
         if (!s.isEmpty())
         {
             fatal(QString("Could not set entity file: %1").arg(s));

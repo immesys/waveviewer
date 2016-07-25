@@ -33,6 +33,7 @@ ApplicationWindow {
          visible:true
          z: -1
     }
+
     function setState(entok,agentconn) {
         agentConnected = agentconn
         entityOk = entok
