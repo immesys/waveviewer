@@ -214,10 +214,6 @@ QByteArray WaveViewer::getUsersEntity()
         return QByteArray();
     }
     QByteArray contents = f.readAll().mid(1);
-    if (contents.length() < 10)
-    {
-        return QByteArray();
-    }
     return contents;
 }
 

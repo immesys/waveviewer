@@ -221,8 +221,8 @@ Rectangle {
         }
 
         imageCapture {
-            onImageCaptured: {
-                var decoded = qrdecoder.decodeImageQML(":/camera/preview_1");
+            onImageSaved: {
+                var decoded = qrdecoder.decodeImageQML("file://" + path);
                 if (decoded.length > 0)
                 {
                     if (entity)
