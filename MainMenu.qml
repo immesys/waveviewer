@@ -119,14 +119,14 @@ Rectangle {
             source: "qrc:/mainassets/account.png"
         }
         onClicked: {
-            if (Qt.platform.os === "android")
+          /*  if (Qt.platform.os === "android")
             {
                 initiateQRPic(true);
             }
             else
-            {
+            {*/
                 fd.open()
-            }
+          //  }
         }
     }
 
