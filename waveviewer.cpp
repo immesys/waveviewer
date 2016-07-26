@@ -112,6 +112,7 @@ void WaveViewer::setDefaultEntityFile(QString file)
     QDir(loc).mkpath(".");
     loc+=QString("/defaultEntity.ent");
     QFile of(QUrl(file).toLocalFile());
+    of.copy(loc);
 }
 
 QStringList WaveViewer::getRecentURIs()
