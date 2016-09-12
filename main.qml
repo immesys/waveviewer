@@ -44,6 +44,7 @@ ApplicationWindow {
     function loadMain (body) {
       appContainer.children = [body]
       appContainer.z = 3
+      mainmenu.visible = false
       body.anchors.fill = appContainer
     }
 
