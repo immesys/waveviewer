@@ -34,10 +34,6 @@ DISTFILES += \
     android/gradle/wrapper/gradle-wrapper.properties \
     android/gradlew.bat
 
-LIBS += -lcrypto -lssl \
-    $$PWD/../ssl/libssl.a \
-    $$PWD/../ssl/libcrypto.a
-
 OTHER_FILES +=
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
